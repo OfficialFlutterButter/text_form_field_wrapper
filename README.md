@@ -1,96 +1,114 @@
 
-A Widget that wraps a TextFormField widget for the puspose of decorating it with a
-border and radiused corners that can be easily adjusted for TextFormFields that need
-to be placed against one another.
+A widget that wraps a `TextFormField` and draws connected borders with corner
+radii that adapt to each field's position in a group.
 
-![A gif demonstrating the radio group in action.](./demo/text_form_field_wrapper_demo.gif)
+![A gif demonstrating the package in action.](./demo/text_form_field_wrapper_demo.gif)
 
 ## Installation
 
-In the `pubspec.yaml` of your flutter project, add the following dependency:
- ``` yaml dependencies:
- text_form_field_wrapper: ^1.0.0
+Add the dependency to your app's `pubspec.yaml`:
+
+```yaml
+dependencies:
+  text_form_field_wrapper: ^2.0.0
 ```
-Import it to each file you use it in:
- ``` dart
- import 'package:text_form_field_wrapper/text_form_field_wrapper.dart';
- ```
+
+Import the package:
+
+```dart
+import 'package:text_form_field_wrapper/text_form_field_wrapper.dart';
+```
 
 ## Usage
 
-### Example 1
+### Standalone field
 
-This example is a very basic, single standalone TextFormFieldWrapper.
-
-``` dart
-TextEditingController myController = TextEditingController();
-
+```dart
 TextFormFieldWrapper(
-    formField: TextFormField(
-      controller: myController,
-      decoration: const InputDecoration(
-          border: InputBorder.none),
-    ),
-    position: TextFormFieldPosition.alone,
-),
+  formField: TextFormField(
+    controller: myController,
+    decoration: const InputDecoration(border: InputBorder.none),
+  ),
+  position: TextFormFieldPosition.alone,
+)
 ```
 
-### Example 2
+### Grouped fields
 
-This example shows a text field placed over a row containing two textfields.
+Use `position` to control how connected borders are rendered.
 
-``` dart
-TextEditingController myController1 = TextEditingController();
-TextEditingController myController2 = TextEditingController();
-TextEditingController myController3 = TextEditingController();
-
-Column( children: [
+```dart
+Column(
+  children: [
     TextFormFieldWrapper(
-    formField: TextFormField(
-        controller: myController1,
-        decoration: const InputDecoration(
-            border: InputBorder.none),
-        ),
-    position: TextFormFieldPosition.top,
+      formField: TextFormField(
+        controller: cardNumberController,
+        decoration: const InputDecoration(border: InputBorder.none),
+      ),
+      position: TextFormFieldPosition.top,
     ),
-    Row( children: [
-        Expanded( child: TextFormFieldWrapper(
+    Row(
+      children: [
+        Expanded(
+          child: TextFormFieldWrapper(
             formField: TextFormField(
-                controller: myController2,
-                decoration: const InputDecoration(
-                    border: InputBorder.none),
-                ),
-            position: TextFormFieldPosition.bottomLeft,
-        ),
-        ),
-        Expanded( child: TextFormFieldWrapper(
-            formField: TextFormField(
-                controller: myController3,
-                decoration: const InputDecoration(
-                    border: InputBorder.none),
-                ),
-            position: TextFormFieldPosition.bottomRight,
+              controller: expiryController,
+              decoration: const InputDecoration(border: InputBorder.none),
             ),
+            position: TextFormFieldPosition.bottomLeft,
+          ),
         ),
-    ]),
-]),
+        Expanded(
+          child: TextFormFieldWrapper(
+            formField: TextFormField(
+              controller: cvvController,
+              decoration: const InputDecoration(border: InputBorder.none),
+            ),
+            position: TextFormFieldPosition.bottomRight,
+          ),
+        ),
+      ],
+    ),
+  ],
+)
 ```
 
+## Notes
 
-## Additional information
+- Set your inner `TextFormField` decoration border to `InputBorder.none`.
+- `ColumnFormFieldItem` is a data holder intended for `ColumnOfWrappedTextFields`.
 
-TODO: Tell users more about the package: where to find more information, how to 
-contribute to the package, how to file issues, what response they can expect 
-from the package authors, and more.
+## Migration from 1.x to 2.0.0
 
+### Breaking changes
 
+- Minimum SDKs are now Dart `>=3.11.0 <4.0.0` and Flutter `>=3.41.0`.
+- `ColumnFormFieldItem` is now a data holder class and is no longer a widget.
 
-- Is there a _bug_ in the code? [File an issue][issue].
+### Migration tips
 
-If a feature is missing (the Dart language is always evolving) or you'd like an
-easier or better way to do something, consider [opening a pull request][pull].
-You can always [file an issue][issue], but generally speaking feature requests
-will be on a best-effort basis.
+- If your app is on older Flutter/Dart, upgrade your app SDK first.
+- If you previously treated `ColumnFormFieldItem` like a widget, replace that usage with `TextFormFieldWrapper` in widget trees and keep `ColumnFormFieldItem` only as configuration data in `ColumnOfWrappedTextFields`.
+- Keep `InputBorder.none` on wrapped `TextFormField` decorations.
 
-[issue]: https://github.com/jonesw5/text_form_field_wrapper/issues
-[pull]: https://github.com/jonesw5/text_form_field_wrapper/pulls
+## Theming overrides (defaults unchanged)
+
+Version `2.0.0` adds optional fill-color overrides while preserving legacy
+defaults when not provided.
+
+```dart
+TextFormFieldWrapper(
+  formField: TextFormField(
+    decoration: const InputDecoration(border: InputBorder.none),
+  ),
+  fillColor: Colors.grey.shade50,
+  disabledFillColor: Colors.grey.shade100,
+)
+```
+
+If you do not set these properties, the widget keeps the same visual defaults as before.
+
+## Contributing and issues
+
+- Found a bug? Open an issue at [https://github.com/jonesw5/text_form_field_wrapper/issues](https://github.com/jonesw5/text_form_field_wrapper/issues).
+- Want to add a feature? Open a pull request at [https://github.com/jonesw5/text_form_field_wrapper/pulls](https://github.com/jonesw5/text_form_field_wrapper/pulls).

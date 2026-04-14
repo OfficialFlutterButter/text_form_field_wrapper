@@ -1,88 +1,77 @@
-library text_form_field_wrapper;
-
 import 'package:flutter/material.dart';
 
-/// The TextFormFieldPosition enum describes the desired
-/// location of the widget in respect to another of its own.
+/// Describes the position of a [TextFormFieldWrapper] relative to neighboring
+/// wrapped fields.
 enum TextFormFieldPosition {
-  /// Describes the position of the widget as having none of
-  /// its borders against another TextFormFieldWrapper object
+  /// No borders touch any adjacent [TextFormFieldWrapper].
   alone,
 
-  /// Describes the position of the widget having only its
-  /// bottom border against another TextFormFieldWrapper object.
-  /// This widget would on 'top' of another and none to its left
-  /// or right
+  /// Only the bottom border touches an adjacent wrapper.
+  /// This field is above another field, with no neighbors to either side.
   top,
 
-  /// Describes the position of the widget having its bottom and
-  /// right borders against another TextFormFieldWrapper object.
-  /// This widget would 'left' of another and 'above' another.
+  /// Bottom and right borders touch adjacent wrappers.
+  /// This field is above and to the left of neighboring fields.
   topLeft,
 
-  /// Describes the position of the widget having its bottom and
-  /// left borders against another TextFormFieldWrapper object.
-  /// This widget would 'right' of another and 'above' another.
+  /// Bottom and left borders touch adjacent wrappers.
+  /// This field is above and to the right of neighboring fields.
   topRight,
 
-  /// Describes the position of the widget having only its
-  /// top border against another TextFormFieldWrapper object.
-  /// This widget would 'below' of another and none to its left
-  /// or right
+  /// Only the top border touches an adjacent wrapper.
+  /// This field is below another field, with no neighbors to either side.
   bottom,
 
-  /// Describes the position of the widget having its top and
-  /// left borders against another TextFormFieldWrapper object.
-  /// This widget would 'right' of another and 'below' another.
+  /// Top and left borders touch adjacent wrappers.
+  /// This field is below and to the right of neighboring fields.
   bottomLeft,
 
-  /// Describes the position of the widget having its top and
-  /// left borders against another TextFormFieldWrapper object.
-  /// This widget would 'right' of another and 'below' another.
+  /// Top and right borders touch adjacent wrappers.
+  /// This field is below and to the left of neighboring fields.
   bottomRight,
 
-  /// Describes the position of the widget having only its
-  /// right border against another TextFormFieldWrapper object.
-  /// This widget would 'left' of another and none above or below.
+  /// Only the right border touches an adjacent wrapper.
+  /// This field is left of another field, with no fields above or below.
   left,
 
-  /// Describes the position of the widget having only its
-  /// left border against another TextFormFieldWrapper object.
-  /// This widget would 'right' of another and none above or below.
+  /// Only the left border touches an adjacent wrapper.
+  /// This field is right of another field, with no fields above or below.
   right,
 
-  /// Describes the position of the widget having all borders
-  /// against another TextFormFieldWrapper object. This widget
-  /// would have a widget above, below, left and right of it.
+  /// All four sides touch adjacent wrappers.
+  /// This field has neighbors above, below, left, and right.
   center,
 }
 
 class TextFormFieldWrapper extends StatefulWidget {
-  /// The TextFormFieldWrapper widget is used to decorate
-  /// the standard flutter form field widget with a border
-  /// and corner radiuses that react to a specified position.
-  const TextFormFieldWrapper(
-      {Key? key,
-      required this.formField,
-      this.position = TextFormFieldPosition.alone,
-      this.suffix,
-      this.prefix,
-      this.shadowColor,
-      this.shadowSize = 0.5,
-      this.borderRadius = 12.0,
-      this.borderThickness = 1.0,
-      this.borderColor,
-      this.borderFocusedThickness = 3.0,
-      this.borderFocusedColor,
-      this.isEnabled = true})
-      : super(key: key);
+  /// Decorates a form field with a border and corner radii that adapt to the
+  /// field's [position] within a grouped layout.
+  const TextFormFieldWrapper({
+    super.key,
+    required this.formField,
+    this.position = TextFormFieldPosition.alone,
+    this.suffix,
+    this.prefix,
+    this.shadowColor,
+    this.shadowSize = 0.5,
+    this.borderRadius = 12.0,
+    this.borderThickness = 1.0,
+    this.borderColor,
+    this.borderFocusedThickness = 3.0,
+    this.borderFocusedColor,
+    this.fillColor,
+    this.disabledFillColor,
+    this.isEnabled = true,
+  });
 
-  /// The form field that this widget is to wrap. Make sure to
-  /// set the inputDecoration of the to have a Border of 'none'
-  final FormField formField;
+  /// The form field to wrap.
+  ///
+  /// Set the wrapped field's `InputDecoration.border` to `InputBorder.none`.
+  final FormField<dynamic> formField;
 
-  /// The position of the wrapper widget in respects to others. The
-  /// position will affect which corners of the border a radiiused.
+  /// The wrapper's position relative to neighboring wrappers.
+  ///
+  /// This determines which corners receive a radius.
   final TextFormFieldPosition position;
 
   /// The widget to the 'left' of the form field. If you are trying
@@ -97,7 +86,7 @@ class TextFormFieldWrapper extends StatefulWidget {
   /// constraint.
   final Widget? suffix;
 
-  /// The color of the shadow
+  /// The shadow color.
   final Color? shadowColor;
 
   /// The radius / size of the shadow.
@@ -115,15 +104,24 @@ class TextFormFieldWrapper extends StatefulWidget {
   /// The thickness of the border while the widget is in focus.
   final double borderFocusedThickness;
 
-  /// Color of the border while the widget is in focus.
+  /// The border color while the wrapped field has focus.
   final Color? borderFocusedColor;
 
-  /// is this form field enabled? The fill color can be different
-  /// if disabled.
+  /// Optional fill color while the field is enabled.
+  /// Defaults to the package's legacy color for continuity.
+  final Color? fillColor;
+
+  /// Optional fill color while the field is disabled.
+  /// Defaults to the package's legacy color for continuity.
+  final Color? disabledFillColor;
+
+  /// Whether the wrapped field is enabled.
+  ///
+  /// A different fill color may be used when disabled.
   final bool isEnabled;
 
   @override
-  _TextFormFieldWrapperState createState() => _TextFormFieldWrapperState();
+  State<TextFormFieldWrapper> createState() => _TextFormFieldWrapperState();
 }
 
 class _TextFormFieldWrapperState extends State<TextFormFieldWrapper> {
@@ -131,33 +129,54 @@ class _TextFormFieldWrapperState extends State<TextFormFieldWrapper> {
 
   final FocusNode _focusNode = FocusNode();
 
+  @override
+  void initState() {
+    super.initState();
+    _focusNode.addListener(_handleFocusChanged);
+  }
+
+  void _handleFocusChanged() {
+    if (_focusNode.hasFocus != _hasFocus) {
+      setState(() {
+        _hasFocus = _focusNode.hasFocus;
+      });
+    }
+  }
+
+  @override
+  void dispose() {
+    _focusNode.removeListener(_handleFocusChanged);
+    _focusNode.dispose();
+    super.dispose();
+  }
+
   bool get _hasTopLeftRadius => [
-        TextFormFieldPosition.alone,
-        TextFormFieldPosition.top,
-        TextFormFieldPosition.topLeft,
-        TextFormFieldPosition.left,
-      ].contains(widget.position);
+    TextFormFieldPosition.alone,
+    TextFormFieldPosition.top,
+    TextFormFieldPosition.topLeft,
+    TextFormFieldPosition.left,
+  ].contains(widget.position);
 
   bool get _hasTopRightRadius => [
-        TextFormFieldPosition.alone,
-        TextFormFieldPosition.top,
-        TextFormFieldPosition.topRight,
-        TextFormFieldPosition.right,
-      ].contains(widget.position);
+    TextFormFieldPosition.alone,
+    TextFormFieldPosition.top,
+    TextFormFieldPosition.topRight,
+    TextFormFieldPosition.right,
+  ].contains(widget.position);
 
   bool get _hasBottomLeftRadius => [
-        TextFormFieldPosition.alone,
-        TextFormFieldPosition.bottom,
-        TextFormFieldPosition.bottomLeft,
-        TextFormFieldPosition.left,
-      ].contains(widget.position);
+    TextFormFieldPosition.alone,
+    TextFormFieldPosition.bottom,
+    TextFormFieldPosition.bottomLeft,
+    TextFormFieldPosition.left,
+  ].contains(widget.position);
 
   bool get _hasBottomRightRadius => [
-        TextFormFieldPosition.alone,
-        TextFormFieldPosition.bottom,
-        TextFormFieldPosition.bottomRight,
-        TextFormFieldPosition.right,
-      ].contains(widget.position);
+    TextFormFieldPosition.alone,
+    TextFormFieldPosition.bottom,
+    TextFormFieldPosition.bottomRight,
+    TextFormFieldPosition.right,
+  ].contains(widget.position);
 
   bool get _hasTopBorder =>
       _hasFocus ||
@@ -184,87 +203,77 @@ class _TextFormFieldWrapperState extends State<TextFormFieldWrapper> {
 
   @override
   Widget build(BuildContext context) {
-    _focusNode.addListener(() {
-      if (_focusNode.hasFocus && !_hasFocus) {
-        setState(() {
-          _hasFocus = true;
-        });
-      } else if (!_focusNode.hasFocus && _hasFocus) {
-        setState(() {
-          _hasFocus = false;
-        });
-      }
-    });
-
-    final Color _shadowColor = widget.shadowColor ?? Colors.grey;
-    final Color _borderColorUnFocused =
+    final Color shadowColor = widget.shadowColor ?? Colors.grey;
+    final Color borderColorUnFocused =
         widget.borderColor ?? Colors.grey.shade300;
-    final Color _borderColorFocused =
+    final Color borderColorFocused =
         widget.borderFocusedColor ?? Colors.lightBlue.shade300;
-    final Color _fillColorEnabled = Colors.grey.shade50;
-    final Color _fillColorDisabled = Colors.grey.shade100;
+    final Color fillColorEnabled = widget.fillColor ?? Colors.grey.shade50;
+    final Color fillColorDisabled =
+        widget.disabledFillColor ?? Colors.grey.shade100;
 
-    Color _fillColor =
-        widget.isEnabled ? _fillColorEnabled : _fillColorDisabled;
-    Color _borderColor =
-        _hasFocus ? _borderColorFocused : _borderColorUnFocused;
-    double _borderWidth =
-        _hasFocus ? widget.borderFocusedThickness : widget.borderThickness;
-    double _cornerRadius = widget.borderRadius;
+    Color fillColor = widget.isEnabled ? fillColorEnabled : fillColorDisabled;
+    Color borderColor = _hasFocus ? borderColorFocused : borderColorUnFocused;
+    double borderWidth = _hasFocus
+        ? widget.borderFocusedThickness
+        : widget.borderThickness;
+    double cornerRadius = widget.borderRadius;
 
-    double _innerRadius = _cornerRadius - _borderWidth;
+    double innerRadius = cornerRadius - borderWidth;
 
     return Focus(
       focusNode: _focusNode,
       child: Container(
         padding: EdgeInsets.fromLTRB(
-          _hasLeftBorder ? _borderWidth : 0.0,
-          _hasTopBorder ? _borderWidth : 0.0,
-          _borderWidth,
-          _borderWidth,
+          _hasLeftBorder ? borderWidth : 0.0,
+          _hasTopBorder ? borderWidth : 0.0,
+          borderWidth,
+          borderWidth,
         ),
         width: double.infinity,
         decoration: BoxDecoration(
-          color: _borderColor,
+          color: borderColor,
           borderRadius: BorderRadius.only(
             topLeft: _hasTopLeftRadius
-                ? Radius.circular(_cornerRadius)
+                ? Radius.circular(cornerRadius)
                 : Radius.zero,
             topRight: _hasTopRightRadius
-                ? Radius.circular(_cornerRadius)
+                ? Radius.circular(cornerRadius)
                 : Radius.zero,
             bottomLeft: _hasBottomLeftRadius
-                ? Radius.circular(_cornerRadius)
+                ? Radius.circular(cornerRadius)
                 : Radius.zero,
             bottomRight: _hasBottomRightRadius
-                ? Radius.circular(_cornerRadius)
+                ? Radius.circular(cornerRadius)
                 : Radius.zero,
           ),
           boxShadow: [
             if (widget.shadowSize != 0.0)
               BoxShadow(
-                color: _shadowColor.withOpacity(0.5),
+                color: shadowColor.withValues(alpha: 0.5),
                 blurRadius: widget.shadowSize,
-                offset: Offset(widget.shadowSize,
-                    widget.shadowSize), // changes position of shadow
+                offset: Offset(
+                  widget.shadowSize,
+                  widget.shadowSize,
+                ), // changes position of shadow
               ),
           ],
         ),
         child: Container(
           decoration: BoxDecoration(
-            color: _fillColor,
+            color: fillColor,
             borderRadius: BorderRadius.only(
               topLeft: _hasTopLeftRadius
-                  ? Radius.circular(_innerRadius)
+                  ? Radius.circular(innerRadius)
                   : Radius.zero,
               topRight: _hasTopRightRadius
-                  ? Radius.circular(_innerRadius)
+                  ? Radius.circular(innerRadius)
                   : Radius.zero,
               bottomLeft: _hasBottomLeftRadius
-                  ? Radius.circular(_innerRadius)
+                  ? Radius.circular(innerRadius)
                   : Radius.zero,
               bottomRight: _hasBottomRightRadius
-                  ? Radius.circular(_innerRadius)
+                  ? Radius.circular(innerRadius)
                   : Radius.zero,
             ),
           ),
@@ -281,7 +290,7 @@ class _TextFormFieldWrapperState extends State<TextFormFieldWrapper> {
                 Padding(
                   padding: const EdgeInsets.only(left: 8.0),
                   child: widget.suffix!,
-                )
+                ),
             ],
           ),
         ),
@@ -290,31 +299,28 @@ class _TextFormFieldWrapperState extends State<TextFormFieldWrapper> {
   }
 }
 
-class ColumnFormFieldItem extends StatelessWidget {
-  /// The ColumnFormFieldItem is a restricted version of the
-  /// TextFormFieldWrapper Widget and is only meant to be used within
-  /// a ColumnOfWrappedTextFields widget.
+class ColumnFormFieldItem {
+  /// Configuration data for one item in [ColumnOfWrappedTextFields].
   const ColumnFormFieldItem({
-    Key? key,
     required this.formField,
     this.prefix,
     this.suffix,
-  }) : super(key: key);
+  });
 
-  final FormField formField;
+  /// The wrapped form field used by ColumnOfWrappedTextFields.
+  final FormField<dynamic> formField;
+
+  /// Optional widget displayed before the field.
   final Widget? prefix;
+
+  /// Optional widget displayed after the field.
   final Widget? suffix;
-  @override
-  Widget build(BuildContext context) {
-    return Container();
-  }
 }
 
 class ColumnOfWrappedTextFields extends StatelessWidget {
-  /// The ColumnOfWrappedTextFields widget a stateless widget used to
-  /// create a vertical stack of Wrapped TextFormFields.
+  /// A stateless helper that builds a vertical stack of wrapped text fields.
   const ColumnOfWrappedTextFields({
-    Key? key,
+    super.key,
     required this.columnFormFieldItems,
     this.shadowColor,
     this.shadowSize = 0.5,
@@ -323,13 +329,16 @@ class ColumnOfWrappedTextFields extends StatelessWidget {
     this.borderColor,
     this.borderFocusedThickness = 3.0,
     this.borderFocusedColor,
-  }) : super(key: key);
+    this.fillColor,
+    this.disabledFillColor,
+  });
 
-  /// The form field that this widget is to wrap. Make sure to
-  /// set the inputDecoration of the to have a Border of 'none'
+  /// The configured wrapped field items.
+  ///
+  /// Set each wrapped field's `InputDecoration.border` to `InputBorder.none`.
   final List<ColumnFormFieldItem> columnFormFieldItems;
 
-  /// The color of the shadow
+  /// The shadow color.
   final Color? shadowColor;
 
   /// The radius / size of the shadow.
@@ -347,23 +356,29 @@ class ColumnOfWrappedTextFields extends StatelessWidget {
   /// The thickness of the border while the widget is in focus.
   final double borderFocusedThickness;
 
-  /// Color of the border while the widget is in focus.
+  /// The border color while a wrapped field has focus.
   final Color? borderFocusedColor;
+
+  /// Optional fill color while fields are enabled.
+  final Color? fillColor;
+
+  /// Optional fill color while fields are disabled.
+  final Color? disabledFillColor;
 
   @override
   Widget build(BuildContext context) {
     List<Widget> widgets = [];
 
     for (int i = 0; i < columnFormFieldItems.length; i++) {
-      TextFormFieldPosition _position = TextFormFieldPosition.center;
+      TextFormFieldPosition position = TextFormFieldPosition.center;
       if (i == 0) {
-        _position = TextFormFieldPosition.top;
+        position = TextFormFieldPosition.top;
       }
       if (i == columnFormFieldItems.length - 1) {
-        _position = TextFormFieldPosition.bottom;
+        position = TextFormFieldPosition.bottom;
       }
       if (columnFormFieldItems.length == 1) {
-        _position = TextFormFieldPosition.alone;
+        position = TextFormFieldPosition.alone;
       }
 
       widgets.add(
@@ -375,11 +390,13 @@ class ColumnOfWrappedTextFields extends StatelessWidget {
           shadowSize: shadowSize,
           borderColor: borderColor,
           borderFocusedColor: borderFocusedColor,
+          fillColor: fillColor,
+          disabledFillColor: disabledFillColor,
           borderFocusedThickness: borderFocusedThickness,
           borderRadius: borderRadius,
           borderThickness: borderThickness,
           isEnabled: columnFormFieldItems[i].formField.enabled,
-          position: _position,
+          position: position,
         ),
       );
     }
