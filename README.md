@@ -1,96 +1,97 @@
+A widget that wraps a `TextFormField` and draws a border with corner radii that
+adjust when fields sit against each other.
 
-A Widget that wraps a TextFormField widget for the puspose of decorating it with a
-border and radiused corners that can be easily adjusted for TextFormFields that need
-to be placed against one another.
-
-![A gif demonstrating the radio group in action.](./demo/text_form_field_wrapper_demo.gif)
+![Grouped form fields with connected borders.](./demo/text_form_field_wrapper_demo.gif)
 
 ## Installation
 
-In the `pubspec.yaml` of your flutter project, add the following dependency:
- ``` yaml dependencies:
- text_form_field_wrapper: ^1.0.0
+Add the dependency to your app's `pubspec.yaml`:
+
+```yaml
+dependencies:
+  text_form_field_wrapper: ^1.0.1
 ```
-Import it to each file you use it in:
- ``` dart
- import 'package:text_form_field_wrapper/text_form_field_wrapper.dart';
- ```
+
+Requires Dart `^3.6.0` and Flutter `>=3.27.0`.
+
+```dart
+import 'package:text_form_field_wrapper/text_form_field_wrapper.dart';
+```
 
 ## Usage
 
-### Example 1
+Set the inner field's border to `InputBorder.none`. The wrapper draws the border.
 
-This example is a very basic, single standalone TextFormFieldWrapper.
+### Standalone field
 
-``` dart
-TextEditingController myController = TextEditingController();
-
+```dart
 TextFormFieldWrapper(
-    formField: TextFormField(
-      controller: myController,
-      decoration: const InputDecoration(
-          border: InputBorder.none),
-    ),
-    position: TextFormFieldPosition.alone,
-),
+  formField: TextFormField(
+    controller: myController,
+    decoration: const InputDecoration(border: InputBorder.none),
+  ),
+  position: TextFormFieldPosition.alone,
+)
 ```
 
-### Example 2
+### Grouped fields
 
-This example shows a text field placed over a row containing two textfields.
+`position` chooses which corners are rounded and which edges are shared with a
+neighbor. Adjacent fields keep a single seam.
 
-``` dart
-TextEditingController myController1 = TextEditingController();
-TextEditingController myController2 = TextEditingController();
-TextEditingController myController3 = TextEditingController();
-
-Column( children: [
+```dart
+Column(
+  children: [
     TextFormFieldWrapper(
-    formField: TextFormField(
-        controller: myController1,
-        decoration: const InputDecoration(
-            border: InputBorder.none),
-        ),
-    position: TextFormFieldPosition.top,
+      formField: TextFormField(
+        controller: cardNumberController,
+        decoration: const InputDecoration(border: InputBorder.none),
+      ),
+      position: TextFormFieldPosition.top,
     ),
-    Row( children: [
-        Expanded( child: TextFormFieldWrapper(
+    Row(
+      children: [
+        Expanded(
+          child: TextFormFieldWrapper(
             formField: TextFormField(
-                controller: myController2,
-                decoration: const InputDecoration(
-                    border: InputBorder.none),
-                ),
-            position: TextFormFieldPosition.bottomLeft,
-        ),
-        ),
-        Expanded( child: TextFormFieldWrapper(
-            formField: TextFormField(
-                controller: myController3,
-                decoration: const InputDecoration(
-                    border: InputBorder.none),
-                ),
-            position: TextFormFieldPosition.bottomRight,
+              controller: expiryController,
+              decoration: const InputDecoration(border: InputBorder.none),
             ),
+            position: TextFormFieldPosition.bottomLeft,
+          ),
         ),
-    ]),
-]),
+        Expanded(
+          child: TextFormFieldWrapper(
+            formField: TextFormField(
+              controller: cvvController,
+              decoration: const InputDecoration(border: InputBorder.none),
+            ),
+            position: TextFormFieldPosition.bottomRight,
+          ),
+        ),
+      ],
+    ),
+  ],
+)
 ```
 
+`ColumnOfWrappedTextFields` stacks `ColumnFormFieldItem`s and assigns `top`,
+`center`, and `bottom` for you. `ColumnFormFieldItem` is configuration for that
+column, not a field you place in the tree yourself.
 
-## Additional information
+## Appearance
 
-TODO: Tell users more about the package: where to find more information, how to 
-contribute to the package, how to file issues, what response they can expect 
-from the package authors, and more.
+Light mode uses the original grey fill and border. Dark mode takes the fill,
+border, and shadow from the surrounding `Theme`, so typed text stays readable.
+Pass `fillColor` and `disabledFillColor` to override either mode.
 
+When `isEnabled` is omitted, the wrapper follows `formField.enabled`.
 
+Focus changes the border color and thickness. It does not move the field or
+change the wrapper's size.
 
-- Is there a _bug_ in the code? [File an issue][issue].
+## Issues
 
-If a feature is missing (the Dart language is always evolving) or you'd like an
-easier or better way to do something, consider [opening a pull request][pull].
-You can always [file an issue][issue], but generally speaking feature requests
-will be on a best-effort basis.
-
-[issue]: https://github.com/jonesw5/text_form_field_wrapper/issues
-[pull]: https://github.com/jonesw5/text_form_field_wrapper/pulls
+Report bugs and open pull requests on
+[GitHub](https://github.com/OfficialFlutterButter/text_form_field_wrapper/issues).
+See [CONTRIBUTING.md](CONTRIBUTING.md) for how releases are published.

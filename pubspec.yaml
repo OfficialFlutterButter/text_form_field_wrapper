@@ -1,11 +1,18 @@
 name: text_form_field_wrapper
-description: A ui wrapper for expressing border shapes around text form fields
-version: 1.0.0
-homepage: https://github.com/jonesw5/text_form_field_wrapper
+description: A UI wrapper for drawing connected border shapes around text form fields.
+version: 1.0.1
+repository: https://github.com/OfficialFlutterButter/text_form_field_wrapper
+issue_tracker: https://github.com/OfficialFlutterButter/text_form_field_wrapper/issues
+topics:
+  - flutter
+  - widget
+  - form
+  - textfield
+  - ui
 
 environment:
-  sdk: ">=2.12.0 <3.0.0"
-  flutter: ">=1.17.0"
+  sdk: ^3.6.0
+  flutter: ">=3.27.0"
 
 dependencies:
   flutter:
@@ -14,8 +21,10 @@ dependencies:
 dev_dependencies:
   flutter_test:
     sdk: flutter
-  flutter_lints: ^1.0.0
+  flutter_lints: ^6.0.0
+
+screenshots:
+  - description: Grouped form fields with connected borders and corner radii.
+    path: demo/text_form_field_wrapper_demo.gif
 
 flutter:
-
-
