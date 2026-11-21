@@ -4,7 +4,7 @@ library;
 import 'dart:math' as math;
 import 'dart:ui' show lerpDouble;
 
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 
 /// Where a [TextFormFieldWrapper] sits relative to the wrappers beside it.
 ///
@@ -602,17 +602,15 @@ class _TextFormFieldWrapperState extends State<TextFormFieldWrapper> {
             children: [
               if (widget.prefix != null)
                 Padding(
-                  padding: EdgeInsetsDirectional.only(
-                    end: 8,
-                  ).resolve(direction),
+                  padding: EdgeInsetsDirectional.only(end: 8)
+                      .resolve(direction),
                   child: widget.prefix,
                 ),
               Expanded(child: field),
               if (widget.suffix != null)
                 Padding(
-                  padding: EdgeInsetsDirectional.only(
-                    start: 8,
-                  ).resolve(direction),
+                  padding: EdgeInsetsDirectional.only(start: 8)
+                      .resolve(direction),
                   child: widget.suffix,
                 ),
             ],
@@ -788,12 +786,11 @@ const Set<TextFormFieldPosition> _positionsWithStartBorder = {
 
 /// One configured field for [ColumnOfWrappedTextFields].
 ///
-/// This widget is configuration. [ColumnOfWrappedTextFields] reads [formField],
+/// This is a data holder. [ColumnOfWrappedTextFields] reads [formField],
 /// [prefix], and [suffix] and builds the wrappers itself.
-class ColumnFormFieldItem extends StatelessWidget {
+class ColumnFormFieldItem {
   /// Creates configuration for a single stacked field.
   const ColumnFormFieldItem({
-    super.key,
     required this.formField,
     this.prefix,
     this.suffix,
@@ -809,11 +806,6 @@ class ColumnFormFieldItem extends StatelessWidget {
 
   /// Widget shown after [formField].
   final Widget? suffix;
-
-  @override
-  Widget build(BuildContext context) {
-    return const SizedBox.shrink();
-  }
 }
 
 /// A vertical stack of [TextFormFieldWrapper]s with shared borders.

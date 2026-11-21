@@ -1,4 +1,4 @@
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:text_form_field_wrapper/text_form_field_wrapper.dart';
 
 void main() {
@@ -10,9 +10,10 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-        title: 'Flutter Demo',
-        theme: ThemeData(primarySwatch: Colors.blue),
-        home: const MyHomePage());
+      title: 'Flutter Demo',
+      theme: ThemeData(primarySwatch: Colors.blue),
+      home: const MyHomePage(),
+    );
   }
 }
 
@@ -32,17 +33,13 @@ class _MyHomePageState extends State<MyHomePage> {
     );
 
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('Text Form Field Wrapper'),
-      ),
+      appBar: AppBar(title: const Text('Text Form Field Wrapper')),
       body: SafeArea(
         child: Center(
           child: SingleChildScrollView(
             child: Container(
               constraints: const BoxConstraints(maxWidth: 600),
-              padding: const EdgeInsets.symmetric(
-                horizontal: 16,
-              ),
+              padding: const EdgeInsets.symmetric(horizontal: 16),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 // mainAxisAlignment: MainAxisAlignment.start,
@@ -52,8 +49,10 @@ class _MyHomePageState extends State<MyHomePage> {
 
                   // Example of TextFormFieldWrapper with position 'alone'
                   const Padding(
-                    padding:
-                        EdgeInsets.symmetric(horizontal: 12.0, vertical: 4.0),
+                    padding: EdgeInsets.symmetric(
+                      horizontal: 12.0,
+                      vertical: 4.0,
+                    ),
                     child: Text('Standalone field with no suffix or prefix'),
                   ),
                   TextFormFieldWrapper(
@@ -67,8 +66,10 @@ class _MyHomePageState extends State<MyHomePage> {
                   // Example of TextFormFieldWrapper with position 'alone'
                   // and with a prefix Widget
                   const Padding(
-                    padding:
-                        EdgeInsets.symmetric(horizontal: 12.0, vertical: 4.0),
+                    padding: EdgeInsets.symmetric(
+                      horizontal: 12.0,
+                      vertical: 4.0,
+                    ),
                     child: Text('Standalone field with prefix only'),
                   ),
                   TextFormFieldWrapper(
@@ -83,8 +84,10 @@ class _MyHomePageState extends State<MyHomePage> {
                   // Example of TextFormFieldWrapper with position 'alone'
                   // and with a suffix Widget
                   const Padding(
-                    padding:
-                        EdgeInsets.symmetric(horizontal: 12.0, vertical: 4.0),
+                    padding: EdgeInsets.symmetric(
+                      horizontal: 12.0,
+                      vertical: 4.0,
+                    ),
                     child: Text('Standalone field with suffix only'),
                   ),
                   TextFormFieldWrapper(
@@ -99,8 +102,10 @@ class _MyHomePageState extends State<MyHomePage> {
                   // Example of TextFormFieldWrapper with position 'alone'
                   // and with a prefix Widget and suffix
                   const Padding(
-                    padding:
-                        EdgeInsets.symmetric(horizontal: 12.0, vertical: 4.0),
+                    padding: EdgeInsets.symmetric(
+                      horizontal: 12.0,
+                      vertical: 4.0,
+                    ),
                     child: Text('Standalone field with prefix and suffix'),
                   ),
                   TextFormFieldWrapper(
@@ -117,8 +122,10 @@ class _MyHomePageState extends State<MyHomePage> {
                   // One TextFormFieldWrapper has the position 'left' and the
                   // other has the position 'right'
                   const Padding(
-                    padding:
-                        EdgeInsets.symmetric(horizontal: 12.0, vertical: 4.0),
+                    padding: EdgeInsets.symmetric(
+                      horizontal: 12.0,
+                      vertical: 4.0,
+                    ),
                     child: Text('Two fields side by side'),
                   ),
                   Row(
@@ -146,8 +153,10 @@ class _MyHomePageState extends State<MyHomePage> {
                   // where the widget is sandwiched between a widget above
                   // and a widget below
                   const Padding(
-                    padding:
-                        EdgeInsets.symmetric(horizontal: 12.0, vertical: 4.0),
+                    padding: EdgeInsets.symmetric(
+                      horizontal: 12.0,
+                      vertical: 4.0,
+                    ),
                     child: Text('Multiple fields stacked ontop of another'),
                   ),
                   Column(
@@ -173,10 +182,13 @@ class _MyHomePageState extends State<MyHomePage> {
                   // Example of TextFormFieldWrappers in a grid like setup
                   // with positions 'top','bottomLeft' and 'bottomRight'
                   const Padding(
-                    padding:
-                        EdgeInsets.symmetric(horizontal: 12.0, vertical: 4.0),
+                    padding: EdgeInsets.symmetric(
+                      horizontal: 12.0,
+                      vertical: 4.0,
+                    ),
                     child: Text(
-                        'Collection of textfield to mimic credit card input'),
+                      'Collection of textfield to mimic credit card input',
+                    ),
                   ),
                   Column(
                     children: [
@@ -185,10 +197,13 @@ class _MyHomePageState extends State<MyHomePage> {
                           initialValue: '',
                           textAlign: TextAlign.center,
                           decoration: const InputDecoration(
-                              hintText: '1234 1234 1234 1234',
-                              hintStyle:
-                                  TextStyle(letterSpacing: 6, fontSize: 18),
-                              border: InputBorder.none),
+                            hintText: '1234 1234 1234 1234',
+                            hintStyle: TextStyle(
+                              letterSpacing: 6,
+                              fontSize: 18,
+                            ),
+                            border: InputBorder.none,
+                          ),
                         ),
                         position: TextFormFieldPosition.top,
                         suffix: const Icon(Icons.credit_card),
@@ -201,10 +216,13 @@ class _MyHomePageState extends State<MyHomePage> {
                                 initialValue: '',
                                 textAlign: TextAlign.center,
                                 decoration: const InputDecoration(
-                                    hintText: 'MM/YY',
-                                    hintStyle: TextStyle(
-                                        letterSpacing: 6, fontSize: 18),
-                                    border: InputBorder.none),
+                                  hintText: 'MM/YY',
+                                  hintStyle: TextStyle(
+                                    letterSpacing: 6,
+                                    fontSize: 18,
+                                  ),
+                                  border: InputBorder.none,
+                                ),
                               ),
                               position: TextFormFieldPosition.bottomLeft,
                             ),
@@ -215,19 +233,20 @@ class _MyHomePageState extends State<MyHomePage> {
                                 initialValue: '',
                                 textAlign: TextAlign.center,
                                 decoration: const InputDecoration(
-                                    hintText: 'CVV',
-                                    hintStyle: TextStyle(
-                                        letterSpacing: 6, fontSize: 18),
-                                    border: InputBorder.none),
+                                  hintText: 'CVV',
+                                  hintStyle: TextStyle(
+                                    letterSpacing: 6,
+                                    fontSize: 18,
+                                  ),
+                                  border: InputBorder.none,
+                                ),
                               ),
                               position: TextFormFieldPosition.bottomRight,
                             ),
                           ),
                         ],
                       ),
-                      const SizedBox(
-                        height: 80,
-                      )
+                      const SizedBox(height: 80),
                     ],
                   ),
                 ],

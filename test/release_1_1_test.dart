@@ -1,6 +1,6 @@
 import 'dart:math' as math;
 
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:text_form_field_wrapper/text_form_field_wrapper.dart';
 
@@ -333,9 +333,8 @@ void _expectBorderContrast(WidgetTester tester) {
   final Finder wrapper = find.byType(TextFormFieldWrapper);
   final Color border = _border(tester, wrapper);
   final Color fill = _fill(tester, wrapper);
-  final Color scaffold = Theme.of(
-    tester.element(find.byType(Scaffold)),
-  ).scaffoldBackgroundColor;
+  final Color scaffold = Theme.of(tester.element(find.byType(Scaffold)))
+      .scaffoldBackgroundColor;
   expect(
     _ratio(border, fill),
     greaterThanOrEqualTo(3),

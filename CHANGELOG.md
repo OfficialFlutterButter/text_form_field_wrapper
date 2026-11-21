@@ -1,3 +1,18 @@
+## 2.0.0 - November 20, 2026
+
+Rebased on 1.1.0. Do not publish until 1.1.0 is on pub.dev. See CONTRIBUTING.md.
+
+### Breaking changes
+- Require Dart `^3.13.0` and Flutter `>=3.47.0`.
+- Depend on `package:material_ui` instead of the deprecated `package:flutter/material.dart` import (#15).
+- `ColumnFormFieldItem` is a data holder, not a widget. Build fields with `TextFormFieldWrapper`.
+
+### Migration notes
+- Upgrade Flutter and Dart before taking 2.0.0.
+- Apps that should stay below Flutter 3.47 use 1.1.0.
+- Replace widget uses of `ColumnFormFieldItem` with `TextFormFieldWrapper`.
+- In the same release, `checkout_screen_ui` should depend on `text_form_field_wrapper: ^2.0.0` and raise its SDK floor to Dart `^3.13.0` and Flutter `>=3.47.0`.
+
 ## 1.1.0 - November 20, 2026
 
 ### Appearance

@@ -9,10 +9,12 @@ Add the dependency to your app's `pubspec.yaml`:
 
 ```yaml
 dependencies:
-  text_form_field_wrapper: ^1.1.0
+  text_form_field_wrapper: ^2.0.0
 ```
 
-Requires Dart `^3.8.0` and Flutter `>=3.32.0`. Apps on older SDKs stay on 1.0.1.
+Requires Dart `^3.13.0` and Flutter `>=3.47.0`. Apps on older SDKs stay on 1.1.0 or 1.0.1.
+
+`ColumnFormFieldItem` is configuration for `ColumnOfWrappedTextFields`. It is not a widget. Use `TextFormFieldWrapper` in the widget tree.
 
 ```dart
 import 'package:text_form_field_wrapper/text_form_field_wrapper.dart';
