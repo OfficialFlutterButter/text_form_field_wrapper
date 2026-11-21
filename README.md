@@ -9,10 +9,10 @@ Add the dependency to your app's `pubspec.yaml`:
 
 ```yaml
 dependencies:
-  text_form_field_wrapper: ^1.0.1
+  text_form_field_wrapper: ^1.1.0
 ```
 
-Requires Dart `^3.6.0` and Flutter `>=3.27.0`.
+Requires Dart `^3.8.0` and Flutter `>=3.32.0`. Apps on older SDKs stay on 1.0.1.
 
 ```dart
 import 'package:text_form_field_wrapper/text_form_field_wrapper.dart';
@@ -81,14 +81,47 @@ column, not a field you place in the tree yourself.
 
 ## Appearance
 
-Light mode uses the original grey fill and border. Dark mode takes the fill,
-border, and shadow from the surrounding `Theme`, so typed text stays readable.
-Pass `fillColor` and `disabledFillColor` to override either mode.
+Fill, border, and shadow come from the surrounding `Theme`. Borders meet a 3:1
+contrast against the fill and the scaffold. Pass `fillColor`,
+`borderColor`, or a `TextFormFieldWrapperTheme` to override them.
+
+`left` and `right` positions follow the writing direction, so a leading cell
+keeps its rounded corner on the outer edge in right-to-left layouts.
 
 When `isEnabled` is omitted, the wrapper follows `formField.enabled`.
 
 Focus changes the border color and thickness. It does not move the field or
 change the wrapper's size.
+
+### Validation
+
+`errorText` is painted under the border. The filled box keeps its height, so a
+neighboring field does not jump.
+
+```dart
+TextFormFieldWrapper.builder(
+  validator: (value) => value == null || value.isEmpty ? 'Required' : null,
+  fieldBuilder: (state) {
+    return TextField(
+      onChanged: state.didChange,
+      decoration: const InputDecoration(border: InputBorder.none),
+    );
+  },
+)
+```
+
+### Previous light colors
+
+```dart
+TextFormFieldWrapper(
+  fillColor: Colors.grey.shade50,
+  disabledFillColor: Colors.grey.shade100,
+  borderColor: Colors.grey.shade300,
+  borderFocusedColor: Colors.lightBlue.shade300,
+  shadowColor: Colors.grey,
+  formField: field,
+)
+```
 
 ## Issues
 

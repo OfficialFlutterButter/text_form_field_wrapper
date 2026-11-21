@@ -10,7 +10,7 @@ pub.dev still serves 1.0.0. Downstream packages, including `checkout_screen_ui`,
 
 1. Ship patch and minor fixes from `release/1.x`, branched from the 1.0.0 commit (`1d65acc`).
 2. **1.0.1** is the non-breaking patch: focus disposal, dark-mode fill, stable layout, non-negative radii, disabled styling, Tab traversal, and listing hygiene.
-3. **1.1.0** is the next minor on this same branch. It is not released yet. It covers theme-driven light-mode defaults, validation error styling, and RTL geometry (issues 11-14).
+3. **1.1.0** is developed on `release/1.1`, branched from the `v1.0.1` tag. That keeps the 1.0.1 publish commit stable. After 1.0.1 is on pub.dev, merge `release/1.1` into `release/1.x` and tag `v1.1.0`. It covers theme-driven defaults, validation error styling, RTL geometry, and the min-plus-stable CI matrix (issues 11-14).
 4. **2.0.0 stays unpublished** until 1.1.0 is published and `master` is rebased onto that release. Publish 2.x only after that rebase. In the same coordinated release, bump `checkout_screen_ui` to `^2.0.0`. That consumer release accepts 2.0.0's higher SDK floor.
 
 Do not publish `master` as 2.0.0 before that rebase.
@@ -30,6 +30,7 @@ Do not publish `master` as 2.0.0 before that rebase.
    ```
 
 3. Tag the commit `vX.Y.Z` (for example `v1.0.1`) and push the branch and the tag.
+   On GitHub, require the `analyze-and-test` check before merging into `release/1.x` or `master`.
 4. Publish from this repository, which is the pub.dev source of truth:
 
    ```bash

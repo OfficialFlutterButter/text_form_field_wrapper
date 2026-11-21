@@ -28,14 +28,18 @@ void main() {
       ),
     );
 
-    expect(_borderColor(tester, find.byType(TextFormFieldWrapper)),
-        unfocusedColor);
+    expect(
+      _borderColor(tester, find.byType(TextFormFieldWrapper)),
+      unfocusedColor,
+    );
 
     await tester.tap(find.byType(TextFormField));
     await tester.pump();
 
     expect(
-        _borderColor(tester, find.byType(TextFormFieldWrapper)), focusedColor);
+      _borderColor(tester, find.byType(TextFormFieldWrapper)),
+      focusedColor,
+    );
   });
 
   testWidgets('rounds only the outer corners for topLeft', (
@@ -54,8 +58,11 @@ void main() {
     );
 
     final BorderRadius radius =
-        _outerDecoration(tester, find.byType(TextFormFieldWrapper))
-            .borderRadius! as BorderRadius;
+        _outerDecoration(
+              tester,
+              find.byType(TextFormFieldWrapper),
+            ).borderRadius!
+            as BorderRadius;
     expect(radius.topLeft, const Radius.circular(borderRadius));
     expect(radius.topRight, Radius.zero);
     expect(radius.bottomLeft, Radius.zero);
@@ -65,8 +72,9 @@ void main() {
   testWidgets('registers the focus listener once across rebuilds', (
     WidgetTester tester,
   ) async {
-    await tester
-        .pumpWidget(const MaterialApp(home: Scaffold(body: _RebuildHost())));
+    await tester.pumpWidget(
+      const MaterialApp(home: Scaffold(body: _RebuildHost())),
+    );
     final _RebuildHostState host = tester.state(find.byType(_RebuildHost));
 
     for (int i = 0; i < 100; i++) {
@@ -86,26 +94,43 @@ void main() {
     expect(TextFormFieldWrapper.debugFocusNotificationCount, 2);
   });
 
-  testWidgets('disposes its focus node with the wrapper',
-      (WidgetTester tester) async {
+  testWidgets('disposes its focus node with the wrapper', (
+    WidgetTester tester,
+  ) async {
     await tester.pumpWidget(_app(TextFormFieldWrapper(formField: _field())));
-    final FocusNode node =
-        _wrapperFocusNode(tester, find.byType(TextFormFieldWrapper));
+    final FocusNode node = _wrapperFocusNode(
+      tester,
+      find.byType(TextFormFieldWrapper),
+    );
 
     await tester.pumpWidget(const SizedBox.shrink());
 
     expect(() => node.addListener(() {}), throwsFlutterError);
   });
 
-  testWidgets('keeps light-mode colors from 1.0.0',
-      (WidgetTester tester) async {
-    await tester.pumpWidget(_app(TextFormFieldWrapper(formField: _field())));
+  testWidgets('explicit legacy colors keep the 1.0.0 light palette', (
+    WidgetTester tester,
+  ) async {
+    await tester.pumpWidget(
+      _app(
+        TextFormFieldWrapper(
+          fillColor: Colors.grey.shade50,
+          disabledFillColor: Colors.grey.shade100,
+          borderColor: Colors.grey.shade300,
+          borderFocusedColor: Colors.lightBlue.shade300,
+          shadowColor: Colors.grey,
+          formField: _field(),
+        ),
+      ),
+    );
     final Finder wrapper = find.byType(TextFormFieldWrapper);
 
     expect(_fillColor(tester, wrapper), Colors.grey.shade50);
     expect(_borderColor(tester, wrapper), Colors.grey.shade300);
-    final BoxShadow shadow =
-        _outerDecoration(tester, wrapper).boxShadow!.single;
+    final BoxShadow shadow = _outerDecoration(
+      tester,
+      wrapper,
+    ).boxShadow!.single;
     expect(shadow.color, Colors.grey.withValues(alpha: 0.5));
 
     await tester.tap(find.byType(TextFormField));
@@ -132,15 +157,18 @@ void main() {
 
     final Finder wrapper = find.byType(TextFormFieldWrapper);
     final Color fill = _fillColor(tester, wrapper);
-    final Color text =
-        tester.widget<EditableText>(find.byType(EditableText)).style.color!;
+    final Color text = tester
+        .widget<EditableText>(find.byType(EditableText))
+        .style
+        .color!;
     final double ratio = _contrastRatio(fill, text);
 
     expect(fill, isNot(Colors.grey.shade50));
     expect(
       ratio,
       greaterThanOrEqualTo(4.5),
-      reason: 'fill=${fill.toARGB32().toRadixString(16)} '
+      reason:
+          'fill=${fill.toARGB32().toRadixString(16)} '
           'text=${text.toARGB32().toRadixString(16)} ratio=$ratio',
     );
   });
@@ -153,8 +181,9 @@ void main() {
       _app(
         TextFormFieldWrapper(formField: _field()),
         theme: ThemeData.dark(useMaterial3: true).copyWith(
-          inputDecorationTheme:
-              const InputDecorationTheme(fillColor: themeFill),
+          inputDecorationTheme: const InputDecorationTheme(
+            fillColor: themeFill,
+          ),
         ),
       ),
     );
@@ -195,11 +224,20 @@ void main() {
   testWidgets('disabled field uses the disabled fill unless overridden', (
     WidgetTester tester,
   ) async {
+    await tester.pumpWidget(_app(TextFormFieldWrapper(formField: _field())));
+    final Color enabledFill = _fillColor(
+      tester,
+      find.byType(TextFormFieldWrapper),
+    );
+
     await tester.pumpWidget(
       _app(TextFormFieldWrapper(formField: _field(enabled: false))),
     );
-    expect(_fillColor(tester, find.byType(TextFormFieldWrapper)),
-        Colors.grey.shade100);
+    final Color disabledFill = _fillColor(
+      tester,
+      find.byType(TextFormFieldWrapper),
+    );
+    expect(disabledFill, isNot(enabledFill));
 
     await tester.pumpWidget(
       _app(
@@ -209,23 +247,17 @@ void main() {
         ),
       ),
     );
-    expect(_fillColor(tester, find.byType(TextFormFieldWrapper)),
-        Colors.grey.shade50);
+    expect(_fillColor(tester, find.byType(TextFormFieldWrapper)), enabledFill);
 
     await tester.pumpWidget(
-      _app(
-        TextFormFieldWrapper(
-          isEnabled: false,
-          formField: _field(),
-        ),
-      ),
+      _app(TextFormFieldWrapper(isEnabled: false, formField: _field())),
     );
-    expect(_fillColor(tester, find.byType(TextFormFieldWrapper)),
-        Colors.grey.shade100);
+    expect(_fillColor(tester, find.byType(TextFormFieldWrapper)), disabledFill);
   });
 
-  testWidgets('column follows each field enabled flag',
-      (WidgetTester tester) async {
+  testWidgets('column follows each field enabled flag', (
+    WidgetTester tester,
+  ) async {
     await tester.pumpWidget(
       _app(
         ColumnOfWrappedTextFields(
@@ -238,12 +270,15 @@ void main() {
     );
 
     final Finder wrappers = find.byType(TextFormFieldWrapper);
-    expect(_fillColor(tester, wrappers.at(0)), Colors.grey.shade50);
-    expect(_fillColor(tester, wrappers.at(1)), Colors.grey.shade100);
+    expect(
+      _fillColor(tester, wrappers.at(0)),
+      isNot(_fillColor(tester, wrappers.at(1))),
+    );
   });
 
-  testWidgets('focus does not move or resize a bottom field',
-      (WidgetTester tester) async {
+  testWidgets('focus does not move or resize a bottom field', (
+    WidgetTester tester,
+  ) async {
     const Key bottomKey = Key('bottom-field');
     await tester.pumpWidget(
       _app(
@@ -269,8 +304,9 @@ void main() {
     );
     final Size wrapperSize = tester.getSize(bottomWrapper);
     final Rect fieldRect = tester.getRect(bottom);
-    final Rect topRect =
-        tester.getRect(find.byType(TextFormFieldWrapper).first);
+    final Rect topRect = tester.getRect(
+      find.byType(TextFormFieldWrapper).first,
+    );
 
     await tester.tap(bottom);
     await tester.pump();
@@ -405,8 +441,9 @@ void main() {
     expectSingleSeam();
   });
 
-  testWidgets('inner corner radius is never negative',
-      (WidgetTester tester) async {
+  testWidgets('inner corner radius is never negative', (
+    WidgetTester tester,
+  ) async {
     await tester.pumpWidget(
       _app(
         TextFormFieldWrapper(
@@ -421,8 +458,11 @@ void main() {
     await tester.pump();
 
     final BorderRadius radius =
-        _innerDecoration(tester, find.byType(TextFormFieldWrapper))
-            .borderRadius! as BorderRadius;
+        _innerDecoration(
+              tester,
+              find.byType(TextFormFieldWrapper),
+            ).borderRadius!
+            as BorderRadius;
     expect(radius.topLeft.x, greaterThanOrEqualTo(0));
     expect(radius.topRight.x, greaterThanOrEqualTo(0));
     expect(radius.bottomLeft.x, greaterThanOrEqualTo(0));
@@ -440,16 +480,15 @@ void main() {
       throwsAssertionError,
     );
     expect(
-      () => TextFormFieldWrapper(
-        borderFocusedThickness: -1,
-        formField: _field(),
-      ),
+      () =>
+          TextFormFieldWrapper(borderFocusedThickness: -1, formField: _field()),
       throwsAssertionError,
     );
   });
 
-  testWidgets('tab moves from one wrapped field to the next',
-      (WidgetTester tester) async {
+  testWidgets('tab moves from one wrapped field to the next', (
+    WidgetTester tester,
+  ) async {
     await tester.pumpWidget(
       _app(
         Column(
@@ -584,10 +623,12 @@ FocusNode _wrapperFocusNode(WidgetTester tester, Finder wrapper) {
 }
 
 int _primaryEditableIndex(WidgetTester tester) {
-  final List<EditableText> editors =
-      tester.widgetList<EditableText>(find.byType(EditableText)).toList();
-  return editors
-      .indexWhere((EditableText editor) => editor.focusNode.hasPrimaryFocus);
+  final List<EditableText> editors = tester
+      .widgetList<EditableText>(find.byType(EditableText))
+      .toList();
+  return editors.indexWhere(
+    (EditableText editor) => editor.focusNode.hasPrimaryFocus,
+  );
 }
 
 int _focusableSemanticsCount(WidgetTester tester) {
